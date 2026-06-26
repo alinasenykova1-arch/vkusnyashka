@@ -229,7 +229,6 @@
             transform: scale(1.05);
         }
 
-        /* ===== НОВЫЙ ФУТЕР (как на главной) ===== */
         .footer {
             text-align: center;
             padding: 35px 20px 15px;
@@ -249,7 +248,6 @@
             margin: 0 15px;
         }
 
-        /* ===== ПЛАВАЮЩАЯ КНОПКА "НАЗАД" ВНИЗУ СПРАВА ===== */
         .back-bottom {
             position: fixed;
             bottom: 30px;
@@ -273,7 +271,6 @@
             box-shadow: 0 12px 35px rgba(232, 122, 93, 0.5);
         }
 
-        /* ===== МОДАЛКИ ===== */
         .cart-overlay {
             display: none;
             position: fixed;
@@ -552,7 +549,6 @@
         <!-- Товары будут добавлены через JavaScript -->
     </section>
 
-    <!-- ===== НОВЫЙ ФУТЕР (как на главной) ===== -->
     <div class="footer">
         <div>
             © 2026 Вкусняшка · Сделано с душой 💙
@@ -702,6 +698,77 @@
         setTimeout(() => msg.remove(), 2500);
     }
 
+    // ===== НОВАЯ ФУНКЦИЯ ОФОРМЛЕНИЯ ЗАКАЗА =====
+    function processOrder(paymentMethod) {
+        const total = getTotal();
+        const methodName = paymentMethod === 'card' ? 'картой' : 'наличными';
+        
+        // 1. ПОКАЗЫВАЕМ СООБЩЕНИЕ
+        showMessage(`✅ Спасибо! Заказ на ${total} ₽ оплачен ${methodName}. Принят в обработку.`);
+
+        // 2. ОТПРАВЛЯЕМ ЗАКАЗ НА ПОЧТУ (через Formspree)
+        const items = [];
+        for (let id in cart) {
+            const product = products.find(p => p.id == id);
+            if (product) {
+                items.push(`${product.emoji} ${product.name} — ${cart[id]} шт. = ${product.price * cart[id]} ₽`);
+            }
+        }
+        const orderDetails = items.join('\n');
+        const message = `
+            🍦 НОВЫЙ ЗАКАЗ ВКУСНЯШКА 🍦
+
+            Состав заказа:
+            ${orderDetails}
+
+            Итого: ${total} ₽
+            Способ оплаты: ${methodName}
+
+            Спасибо за заказ! 💙
+        `;
+
+        // ОТПРАВКА НА FORMSPREE (ВАШ ID)
+        fetch('https://formspree.io/f/xvzjaazk', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                total: total,
+                payment: methodName,
+                items: items.join(', ')
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.warn('Письмо не отправлено, но заказ оформлен.');
+            }
+        })
+        .catch(error => {
+            console.warn('Ошибка отправки письма, но заказ оформлен.');
+        });
+
+        // 3. ОЧИЩАЕМ КОРЗИНУ
+        cart = {};
+        saveCart();
+        updateUI();
+    }
+
+    // ===== ОБРАБОТЧИКИ КНОПОК ОПЛАТЫ =====
+    document.getElementById('payCard').addEventListener('click', function() {
+        if (getCount() === 0) return;
+        document.getElementById('payOverlay').classList.remove('active');
+        processOrder('card');
+    });
+
+    document.getElementById('payCash').addEventListener('click', function() {
+        if (getCount() === 0) return;
+        document.getElementById('payOverlay').classList.remove('active');
+        processOrder('cash');
+    });
+
+    // ===== ОТКРЫТИЕ / ЗАКРЫТИЕ КОРЗИНЫ =====
     document.getElementById('cartIcon').addEventListener('click', () => {
         document.getElementById('cartOverlay').classList.add('active');
         updateUI();
@@ -723,20 +790,6 @@
         document.getElementById('payOverlay').classList.add('active');
     });
 
-    function handlePayment(method) {
-        document.getElementById('payOverlay').classList.remove('active');
-        const total = getTotal();
-        const methodName = method === 'card' ? 'картой' : 'наличными';
-        setTimeout(() => {
-            showMessage(`✅ Спасибо! Заказ на ${total} ₽ оплачен ${methodName}.`);
-            cart = {};
-            saveCart();
-            updateUI();
-        }, 300);
-    }
-
-    document.getElementById('payCard').addEventListener('click', () => handlePayment('card'));
-    document.getElementById('payCash').addEventListener('click', () => handlePayment('cash'));
     document.getElementById('closePay').addEventListener('click', () => {
         document.getElementById('payOverlay').classList.remove('active');
     });
