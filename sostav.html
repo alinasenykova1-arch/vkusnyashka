@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Состав мороженого — Вкусняшка</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #FFF9F0;
+            color: #4A2C1B;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #E87A5D;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .back-link:hover {
+            color: #B86B4A;
+            transform: translateX(-5px);
+        }
+        h1 {
+            font-size: 2.8em;
+            color: #E87A5D;
+            margin-bottom: 20px;
+        }
+        .ingredient {
+            background: #FFE3C9;
+            padding: 20px 25px;
+            border-radius: 20px;
+            margin: 15px 0;
+            transition: 0.3s;
+        }
+        .ingredient:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .ingredient h3 {
+            color: #E87A5D;
+            font-size: 1.3em;
+        }
+        .ingredient p {
+            color: #4A2C1B;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+
+        /* ===== НОВЫЙ ФУТЕР (как на главной) ===== */
+        .footer {
+            text-align: center;
+            padding: 35px 20px 15px;
+            color: #A67A64;
+            font-size: 0.95em;
+            border-top: 2px solid #FCE2C1;
+            margin-top: 30px;
+        }
+        .footer .requisites {
+            margin-top: 15px;
+            font-size: 0.9em;
+            line-height: 1.8;
+            color: #B86B4A;
+        }
+        .footer .requisites span {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        /* ===== ПЛАВАЮЩАЯ КНОПКА "НАЗАД" ВНИЗУ СПРАВА ===== */
+        .back-bottom {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #E87A5D;
+            color: #FFF;
+            padding: 14px 24px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1em;
+            box-shadow: 0 8px 25px rgba(232, 122, 93, 0.4);
+            transition: 0.3s;
+            z-index: 100;
+            border: 2px solid #E87A5D;
+        }
+        .back-bottom:hover {
+            background: #FFF;
+            color: #E87A5D;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(232, 122, 93, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .back-bottom {
+                padding: 12px 18px;
+                font-size: 0.9em;
+                bottom: 20px;
+                right: 20px;
+            }
+            .footer .requisites span { display: block; margin: 3px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="index.html" class="back-link">← Назад на главную</a>
+
+    <h1>🧾 Подробный состав мороженого «Вкусняшка»</h1>
+
+    <div class="ingredient">
+        <h3>🥛 Молоко цельное</h3>
+        <p>Высокое качество, отборное, из экологически чистых регионов. Жирность 3,5%. Без сухого молока.</p>
+    </div>
+
+    <div class="ingredient">
+        <h3>🥛 Сливки</h3>
+        <p>Натуральные сливки жирностью 33%. Придают мороженому нежность и кремовую текстуру.</p>
+    </div>
+
+    <div class="ingredient">
+        <h3>🍬 Сахар</h3>
+        <p>Сахарный песок высшего сорта. Используется в точной пропорции для идеального баланса сладости.</p>
+    </div>
+
+    <div class="ingredient">
+        <h3>🍓 Ягоды и 🍌 Фрукты</h3>
+        <p>Только свежие и замороженные ягоды: клубника, малина, черника, бананы. Без ароматизаторов.</p>
+    </div>
+
+    <div class="ingredient">
+        <h3>🌿 Натуральные добавки</h3>
+        <p>Ванильный экстракт, какао-порошок, фруктовые пюре — только натуральные ингредиенты.</p>
+    </div>
+
+    <div style="background: #FFDBB5; padding: 20px 25px; border-radius: 20px; margin-top: 25px;">
+        <h3 style="color: #E87A5D;">❌ Чего НЕТ в составе</h3>
+        <p>❌ Консервантов · ❌ Искусственных красителей · ❌ Пальмового масла · ❌ Заменителей молочного жира</p>
+    </div>
+
+    <!-- ===== НОВЫЙ ФУТЕР (как на главной) ===== -->
+    <div class="footer">
+        <div>
+            © 2026 Вкусняшка · Сделано с душой ❤
+        </div>
+        <div class="requisites">
+            <span>ИП «Вкусняшка»</span>
+            <span>ОГРН 1234567890123</span>
+            <span>ИНН 1234567890</span>
+            <span>📍 г. Казань, ул. Сладкая, д. 1</span>
+            <span>📞 +7 (843) 123-45-67</span>
+            <span>✉️ info@vkusnyashka.ru</span>
+        </div>
+    </div>
+
+</div>
+
+<a href="index.html" class="back-bottom">← Назад на главную</a>
+
+</body>
+</html>
