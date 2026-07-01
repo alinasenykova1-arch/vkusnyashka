@@ -577,6 +577,7 @@
 </div>
 
 <script>
+    // ===== ТОВАРЫ (те же, что на странице вкусов) =====
     const products = [
         { id: 1, name: 'Рожок ванильный', emoji: '🍦', price: 120 },
         { id: 2, name: 'Рожок шоколадный', emoji: '🍫', price: 130 },
@@ -673,6 +674,77 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
+    // ===== ФУНКЦИЯ ОТПРАВКИ ЗАКАЗА НА ПОЧТУ (ДОБАВЛЕНА) =====
+    function processOrder(paymentMethod) {
+        const total = getTotal();
+        const methodName = paymentMethod === 'card' ? 'картой' : 'наличными';
+        
+        // 1. ПОКАЗЫВАЕМ СООБЩЕНИЕ
+        showMessage(`✅ Спасибо! Заказ на ${total} ₽ оплачен ${methodName}. Принят в обработку.`);
+
+        // 2. ОТПРАВЛЯЕМ ЗАКАЗ НА ПОЧТУ (через Formspree)
+        const items = [];
+        for (let id in cart) {
+            const product = products.find(p => p.id == id);
+            if (product) {
+                items.push(`${product.emoji} ${product.name} — ${cart[id]} шт. = ${product.price * cart[id]} ₽`);
+            }
+        }
+        const orderDetails = items.join('\n');
+        const message = `
+            🍦 НОВЫЙ ЗАКАЗ ВКУСНЯШКА 🍦
+
+            Состав заказа:
+            ${orderDetails}
+
+            Итого: ${total} ₽
+            Способ оплаты: ${methodName}
+
+            Спасибо за заказ! 💙
+        `;
+
+        // ОТПРАВКА НА FORMSPREE
+        fetch('https://formspree.io/f/xvzjaazk', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'Сообщение': message,
+                'Сумма': total + ' ₽',
+                'Способ оплаты': methodName,
+                'Товары': items.join(', ')
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.warn('Письмо не отправлено, но заказ оформлен.');
+            }
+        })
+        .catch(error => {
+            console.warn('Ошибка отправки письма, но заказ оформлен.');
+        });
+
+        // 3. ОЧИЩАЕМ КОРЗИНУ
+        cart = {};
+        saveCart();
+        updateUI();
+    }
+
+    // ===== ОБРАБОТЧИКИ ДЛЯ КНОПОК ОПЛАТЫ =====
+    document.getElementById('payCard').addEventListener('click', function() {
+        if (getCount() === 0) return;
+        document.getElementById('payOverlay').classList.remove('active');
+        processOrder('card');
+    });
+
+    document.getElementById('payCash').addEventListener('click', function() {
+        if (getCount() === 0) return;
+        document.getElementById('payOverlay').classList.remove('active');
+        processOrder('cash');
+    });
+
+    // ===== ОТКРЫТИЕ / ЗАКРЫТИЕ КОРЗИНЫ =====
     document.getElementById('cartIcon').addEventListener('click', () => {
         document.getElementById('cartOverlay').classList.add('active');
         updateUI();
@@ -694,20 +766,6 @@
         document.getElementById('payOverlay').classList.add('active');
     });
 
-    function handlePayment(method) {
-        document.getElementById('payOverlay').classList.remove('active');
-        const total = getTotal();
-        const methodName = method === 'card' ? 'картой' : 'наличными';
-        setTimeout(() => {
-            showMessage(`✅ Спасибо! Заказ на ${total} ₽ оплачен ${methodName}.`);
-            cart = {};
-            saveCart();
-            updateUI();
-        }, 300);
-    }
-
-    document.getElementById('payCard').addEventListener('click', () => handlePayment('card'));
-    document.getElementById('payCash').addEventListener('click', () => handlePayment('cash'));
     document.getElementById('closePay').addEventListener('click', () => {
         document.getElementById('payOverlay').classList.remove('active');
     });
@@ -718,8 +776,10 @@
         }
     });
 
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
     updateUI();
 
+    // Анимация для сообщений
     const style = document.createElement('style');
     style.textContent = `
         @keyframes fadeInOut {
