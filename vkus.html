@@ -47,8 +47,13 @@
             transition: 0.3s;
             font-size: 0.95em;
             border: 2px solid #E87A5D;
-            cursor: default;
-            opacity: 0.8;
+            cursor: pointer;
+            opacity: 0.9;
+        }
+        .btn-order-active:hover {
+            background: #FFF;
+            color: #E87A5D;
+            transform: scale(1.05);
         }
 
         .cart-icon {
@@ -471,7 +476,7 @@
     <div class="top-bar">
         <a href="index.html" class="back-link">← Назад на главную</a>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <span class="btn-order-active">📋 Заказ</span>
+            <a href="#catalog-section" class="btn-order-active" style="text-decoration: none;">📋 Заказ</a>
             <span class="cart-icon" id="cartIcon" title="Корзина">
                 🛒
                 <span class="cart-count" id="cartCount">0</span>
@@ -698,7 +703,7 @@
         setTimeout(() => msg.remove(), 2500);
     }
 
-    // ===== НОВАЯ ФУНКЦИЯ ОФОРМЛЕНИЯ ЗАКАЗА =====
+    // ===== ФУНКЦИЯ ОФОРМЛЕНИЯ ЗАКАЗА =====
     function processOrder(paymentMethod) {
         const total = getTotal();
         const methodName = paymentMethod === 'card' ? 'картой' : 'наличными';
@@ -727,17 +732,17 @@
             Спасибо за заказ! 💙
         `;
 
-        // ОТПРАВКА НА FORMSPREE (ВАШ ID)
+        // ОТПРАВКА НА FORMSPREE
         fetch('https://formspree.io/f/xvzjaazk', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                message: message,
-                total: total,
-                payment: methodName,
-                items: items.join(', ')
+                'Сообщение': message,
+                'Сумма': total + ' ₽',
+                'Способ оплаты': methodName,
+                'Товары': items.join(', ')
             })
         })
         .then(response => {
